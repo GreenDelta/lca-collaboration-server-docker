@@ -1,0 +1,32 @@
+services:
+  server:
+    container_name: collaboration-server
+    build:
+      args:
+        mysql_host: collaboration-server-db
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - 8080:8080
+    volumes:
+      - server-data:/opt/collab
+  db:
+    image: mysql:8.1
+    container_name: collaboration-server-db
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=root-password
+      - MYSQL_DATABASE=collaboration-server
+      - MYSQL_USER=collaboration-server
+      - MYSQL_PASSWORD=collaboration-server
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+    volumes:
+      - db-data:/var/lib/mysql
+volumes:
+  db-data:
+  server-data:

@@ -1,0 +1,3 @@
+# Ignore the installer and the server WAR file
+*.war
+*.jar
