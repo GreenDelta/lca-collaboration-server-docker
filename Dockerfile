@@ -4,20 +4,20 @@ ARG mysql_host=collaboration-server-db
 
 WORKDIR /
 
-# 1. Update the OS and install dependencies
+# Install packages
 RUN apt-get update
 RUN apt-get install zip unzip
 
 # File structure and installation files
 RUN mkdir -p /opt/collab /opt/install
 WORKDIR /opt/install
-COPY lca-collaboration-server-installer-* installer.jar
+RUN curl https://www.openlca.org/wp-content/uploads/2023/08/lca-collaboration-server-installer-2.0.1_2023-08-16.jar --output installer.jar
 COPY lca-collaboration-server-installer.config installer.config
 
-# Copy the server WAR file.
+# Fetch the server WAR file.
 WORKDIR $CATALINA_HOME
 RUN rm -fR webapps/*
-COPY lca-collaboration-server-*.war webapps/ROOT.war
+RUN curl https://www.openlca.org/wp-content/uploads/2023/08/lca-collaboration-server-2.0.2_2023-08-16.war --output webapps/ROOT.war
 
 # Edit the MySQL host
 WORKDIR /tmp
