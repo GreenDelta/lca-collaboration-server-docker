@@ -11,13 +11,13 @@ RUN apt-get install zip unzip
 # File structure and installation files
 RUN mkdir -p /opt/collab /opt/install
 WORKDIR /opt/install
-RUN curl https://www.openlca.org/wp-content/uploads/2023/08/lca-collaboration-server-installer-2.0.1_2023-08-16.jar --output installer.jar
+RUN curl https://www.openlca.org/wp-content/uploads/2023/08/lca-collaboration-server-installer-2.0.2_2023-08-17.jar --output installer.jar
 COPY lca-collaboration-server-installer.config installer.config
 
 # Fetch the server WAR file.
 WORKDIR $CATALINA_HOME
 RUN rm -fR webapps/*
-RUN curl https://www.openlca.org/wp-content/uploads/2023/08/lca-collaboration-server-2.0.2_2023-08-16.war --output webapps/ROOT.war
+RUN curl https://www.openlca.org/wp-content/uploads/2023/08/lca-collaboration-server-2.0.4_2023-08-30.war --output webapps/ROOT.war
 
 # Edit the MySQL host
 WORKDIR /tmp
