@@ -1,4 +1,4 @@
-# Examle Docker setup for the LCA Collaboration Server 2.0
+# Example Docker setup for the LCA Collaboration Server 2.0
 
 This repository contains a setup for running the [LCA Collaboration Server 2.0](https://www.openlca.org/collaboration-server/) in a Docker container. In order to run it, just checkout this repository, navigate to the project folder and run the following command:
 
