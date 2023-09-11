@@ -1,6 +1,7 @@
 services:
   server:
     container_name: collaboration-server
+    image: lca-collaboration-server
     build:
       args:
         mysql_host: collaboration-server-db
@@ -11,6 +12,19 @@ services:
       - 8080:8080
     volumes:
       - server-data:/opt/collab
+      - type: tmpfs
+        target: /usr/local/tomcat/logs
+      - type: tmpfs
+        target: /user/local/tomcat/conf
+      - type: tmpfs
+        target: /user/local/tomcat/work
+      - type: tmpfs
+        target: /user/local/tomcat/work/localhost/ROOT
+      - type: tmpfs
+        target: /root/.config
+    networks:
+      - collaboration
+    read_only: true
   db:
     image: mysql:8.1
     container_name: collaboration-server-db
@@ -27,6 +41,15 @@ services:
       retries: 10
     volumes:
       - db-data:/var/lib/mysql
+      - type: tmpfs
+        target: /tmp
+      - type: tmpfs
+        target: /var/run/mysqld
+    networks:
+      - collaboration
+    read_only: true
 volumes:
   db-data:
   server-data:
+networks:
+  collaboration:
