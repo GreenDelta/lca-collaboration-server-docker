@@ -22,6 +22,7 @@ RUN curl https://www.openlca.org/wp-content/uploads/2023/08/lca-collaboration-se
 # Create the directories to be able to be able to run the container in read-only.
 RUN mkdir -p webapps/ROOT conf/Catalina/localhost/ROOT work/Catalina/localhost/ROOT
 RUN unzip $CATALINA_HOME/webapps/ROOT.war -d webapps/ROOT
+RUN rm $CATALINA_HOME/webapps/ROOT.war
 
 # Edit the MySQL host
 WORKDIR $CATALINA_HOME/webapps/ROOT

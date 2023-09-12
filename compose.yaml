@@ -15,12 +15,6 @@ services:
       - type: tmpfs
         target: /usr/local/tomcat/logs
       - type: tmpfs
-        target: /user/local/tomcat/conf
-      - type: tmpfs
-        target: /user/local/tomcat/work
-      - type: tmpfs
-        target: /user/local/tomcat/work/localhost/ROOT
-      - type: tmpfs
         target: /root/.config
     networks:
       - collaboration
