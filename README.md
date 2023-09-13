@@ -21,7 +21,7 @@ spring.datasource.password=<MYSQL_PASSWORD>
 [...]
 ```
 
-The container can be run with the following command:
+The container can be run with the following command (the MySQL server must be up and running):
 
 ```bash
 docker compose -f compose-read-only.yaml up
