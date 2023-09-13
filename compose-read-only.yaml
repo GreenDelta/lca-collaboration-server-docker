@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  server:
+    image: lca-collaboration-server
+    container_name: collaboration-server
+    command: catalina.sh run;
+    ports:
+      - 8080:8080
+    volumes:
+      - server-data:/opt/collab
+      - ./application.properties:/usr/local/tomcat/webapps/ROOT/WEB-INF/classes/application.properties
+      - type: tmpfs
+        target: /usr/local/tomcat/logs
+      - type: tmpfs
+        target: /root/.config
+    read_only: true
+volumes:
+  server-data:

@@ -1,7 +1,5 @@
 FROM tomcat:9-jdk17
 
-ARG mysql_host=collaboration-server-db
-
 WORKDIR /
 
 # Install packages
@@ -24,10 +22,6 @@ RUN mkdir -p webapps/ROOT conf/Catalina/localhost/ROOT work/Catalina/localhost/R
 RUN unzip $CATALINA_HOME/webapps/ROOT.war -d webapps/ROOT
 RUN rm $CATALINA_HOME/webapps/ROOT.war
 
-# Edit the MySQL host
-WORKDIR $CATALINA_HOME/webapps/ROOT
-RUN sed -i "s/localhost:3306/$mysql_host:3306/" WEB-INF/classes/application.properties
-
 WORKDIR $CATALINA_HOME
 
-CMD java -jar /opt/install/installer.jar -p /opt/install/installer.config ; catalina.sh run
+CMD catalina.sh run
