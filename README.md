@@ -1,18 +1,37 @@
-# Example Docker setup for the LCA Collaboration Server 2.0
+# Example Docker Setup for the LCA Collaboration Server 2.0
 
-This repository contains a setup for running the [LCA Collaboration Server 2.0](https://www.openlca.org/collaboration-server/) in a Docker container. 
+This repository contains a setup for running the [LCA Collaboration Server 2.0](https://www.openlca.org/collaboration-server/) in a Docker container. Before you run a setup as described below, you may have to update the download URLs for the LCA collaboration server and its installer in the [Docker file](./Dockerfile) first.
 
 
+## Running with a MySQL Server
 
-## Run the LCA Collaboration Server container in read-only mode with an external MySQL server.
+In order to run the LCA Collaboration Server and a MySQL server, just checkout this repository, navigate to the project folder and run the following command:
 
-To run the collaboration server in read-only mode, pull the `lca-collaboration-server` image or build it with the following command:
+```bash
+docker compose -f compose-with-db.yaml up
+```
+
+This will build the image for the collaboration server and also fetch an image for MySQL if these images do not exist yet. Then it starts containers for these images in interactive mode.
+
+The setup will use two volumes (`db-data` and `server-data`) for storing data. These volumes are created if they do not exist yet:
+
+```bash
+docker volume ls
+# DRIVER VOLUME NAME
+# local  lca-collaboration-server-docker_db-data
+# local  lca-collaboration-server-docker_server-data
+```
+
+
+## Running in read-only mode with external MySQL Server
+
+To run the collaboration server in read-only mode, build the `lca-collaboration-server` image with the following command first:
 
 ```bash
 docker build -t lca-collaboration-server .
 ```
 
-The MySQL server parameters must be adapted in `application.properties`:
+The MySQL Server parameters can be adapted in the `application.properties` file:
 
 ```bash
 spring.datasource.url=jdbc:mysql://<HOST>:<PORT>/<MYSQL_DATABASE>
@@ -21,7 +40,7 @@ spring.datasource.password=<MYSQL_PASSWORD>
 [...]
 ```
 
-The container can be run with the following command (the MySQL server must be up and running):
+The container can be run with the following command (the MySQL server must be up and running) then:
 
 ```bash
 docker compose -f compose-read-only.yaml up
@@ -43,24 +62,6 @@ docker volume ls
 # local  lca-collaboration-server-docker_server-data
 ```
 
-## Run the LCA Collaboration Server container and the MySQL server.
-
-In order to run the LCA Collaboration Server with the MySQL server, just checkout this repository, navigate to the project folder and run the following command:
-
-```bash
-docker compose -f compose-with-db.yaml up
-```
-
-This will build the image for the collaboration server and also fetch an image for MySQL if these images do not exist yet. Then it starts containers for these images in interactive mode. 
-
-The setup will use two volumes (`db-data` and `server-data`) for storing data. These volumes are created if they do not exist yet:
-
-```bash
-docker volume ls
-# DRIVER VOLUME NAME
-# local  lca-collaboration-server-docker_db-data
-# local  lca-collaboration-server-docker_server-data
-```
 
 ## Run a stand alone MySQL container
 
