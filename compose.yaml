@@ -1,6 +1,7 @@
 version: '3.8'
 
 services:
+
   server:
     image: lca-collaboration-server
     container_name: collaboration-server
@@ -16,6 +17,7 @@ services:
       - ./application.properties:/usr/local/tomcat/webapps/ROOT/WEB-INF/classes/application.properties
     networks:
       - collaboration
+
   db:
     image: mysql:8.1
     container_name: collaboration-server-db
@@ -34,6 +36,19 @@ services:
       - db-data:/var/lib/mysql
     networks:
       - collaboration
+
+  search:
+    image: opensearchproject/opensearch:latest
+    container_name: collaboration-server-search
+    environment:
+      - discovery.type=single-node
+      - plugins.security.disabled=true
+    ports:
+      - 9200:9200
+      - 9600:9600
+    networks:
+      - collaboration
+
 volumes:
   db-data:
   server-data:
