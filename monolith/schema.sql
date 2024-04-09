@@ -1,4 +1,5 @@
-
+CREATE DATABASE IF NOT EXISTS `collaboration-server`;
+USE `collaboration-server`;
 
 DROP TABLE IF EXISTS comment;
 CREATE TABLE comment (

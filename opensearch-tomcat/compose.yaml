@@ -1,0 +1,7 @@
+services:
+
+  cs:
+    image: opensearch-tomcat
+    container_name: opensearch-db
+    build: .
+    command: bash -c "/usr/local/opensearch/bin/opensearch"

@@ -1,0 +1,17 @@
+services:
+
+  cs:
+    image: lca-collaboration-server-monolith
+    container_name: collaboration-server
+    build: .
+    command: bash -c "./entrypoint.sh"
+    ports:
+      - 8080:8080
+    volumes:
+      - server-data:/opt/collab
+      - ./application.properties:/usr/local/tomcat/webapps/ROOT/WEB-INF/classes/application.properties
+      - db-data:/usr/local/mysql/data
+
+volumes:
+  server-data:
+  db-data:

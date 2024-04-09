@@ -1,0 +1,12 @@
+services:
+
+  db:
+    image: mysql-tomcat
+    container_name: mysql-db
+    build: .
+    command: bash -c "./entrypoint.sh"
+    volumes:
+      - db-data:/usr/local/mysql/data
+
+volumes:
+  db-data:
