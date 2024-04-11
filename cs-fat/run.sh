@@ -2,12 +2,12 @@
 
 # data & resources
 data_dir=/data
-mkdir -p /data/repositories
-mkdir -p /data/libraries
-mkdir -p /data/tomcat/conf-ROOT
-mkdir -p /data/tomcat/work-ROOT
-mkdir -p /data/opensearch
-chmod -R a+rwx /data
+mkdir -p $data_dir/repositories
+mkdir -p $data_dir/libraries
+mkdir -p $data_dir/tomcat/conf-$APP
+mkdir -p $data_dir/tomcat/work-$APP
+mkdir -p $data_dir/opensearch
+chmod -R a+rwx $data_dir
 mysql_data="$data_dir/mysql"
 mysql_schema=/opt/install/schema.sql
 
@@ -59,7 +59,7 @@ fi
 # $mysql_cmd
 
 echo "Start OpenSearch server ..."
-chmod -R a+rwx /data/opensearch
+chmod -R a+rwx $data_dir/opensearch
 sudo -H -u search_usr /opt/install/search/opensearch-tar-install.sh &
 sleep 5
 

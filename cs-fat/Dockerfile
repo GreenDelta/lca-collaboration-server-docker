@@ -1,6 +1,6 @@
 FROM tomcat:10-jdk17
 
-# ENV SERVER_SERVLET_CONTEXT_PATH=/cs-fat
+ENV APP=cs-fat
 
 EXPOSE 8080
 
@@ -31,15 +31,14 @@ RUN chmod -R a+rwx /opt/install/search
 # install the CS
 WORKDIR $CATALINA_HOME
 RUN rm -fR webapps/*
-RUN curl https://share.greendelta.com/index.php/s/SCt0vYJU2rsDRgq/download  -o webapps/ROOT.war
+RUN curl https://share.greendelta.com/index.php/s/SCt0vYJU2rsDRgq/download  -o webapps/$APP.war
 
-RUN mkdir -p webapps/ROOT conf/Catalina/localhost/ROOT work/Catalina/localhost/ROOT
-RUN unzip $CATALINA_HOME/webapps/ROOT.war -d webapps/ROOT
-RUN rm $CATALINA_HOME/webapps/ROOT.war
-RUN rm $CATALINA_HOME/webapps/ROOT/WEB-INF/classes/application.properties
-COPY ./application.properties $CATALINA_HOME/webapps/ROOT/WEB-INF/classes/application.properties
-
-# RUN sed -i -e 's/<base href="\/"\/>/<base href="\/cs-fat" \/>/' ./webapps/ROOT/WEB-INF/classes/static/*.html
+RUN mkdir -p webapps/$APP conf/Catalina/localhost/$APP work/Catalina/localhost/$APP
+RUN unzip $CATALINA_HOME/webapps/$APP.war -d webapps/$APP
+RUN rm $CATALINA_HOME/webapps/$APP.war
+RUN rm $CATALINA_HOME/webapps/$APP/WEB-INF/classes/application.properties
+COPY ./application.properties $CATALINA_HOME/webapps/$APP/WEB-INF/classes/application.properties
+RUN sed -i -e "s/<base href=\"\/\"\/>/<base href=\"\/$APP\/\" \/>/" ./webapps/$APP/WEB-INF/classes/static/*.html
 
 # copy other resources
 WORKDIR /opt/install
