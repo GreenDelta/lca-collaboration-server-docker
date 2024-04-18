@@ -31,7 +31,7 @@ RUN chmod -R a+rwx /opt/install/search
 # install the CS
 WORKDIR $CATALINA_HOME
 RUN rm -fR webapps/*
-RUN curl https://share.greendelta.com/index.php/s/SCt0vYJU2rsDRgq/download  -o webapps/$APP.war
+RUN curl https://share.greendelta.com/index.php/s/KqasKAdcmASD3yY/download  -o webapps/$APP.war
 
 RUN mkdir -p webapps/$APP conf/Catalina/localhost/$APP work/Catalina/localhost/$APP
 RUN unzip $CATALINA_HOME/webapps/$APP.war -d webapps/$APP
