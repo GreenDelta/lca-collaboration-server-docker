@@ -15,7 +15,7 @@ COPY lca-collaboration-server-installer.config installer.config
 # Fetch the server WAR file.
 WORKDIR $CATALINA_HOME
 RUN rm -fR webapps/*
-RUN curl https://share.greendelta.com/index.php/s/SCt0vYJU2rsDRgq/download  --output webapps/ROOT.war
+RUN curl https://share.greendelta.com/index.php/s/xPedzVnLZrHS9dj/download  --output webapps/ROOT.war
 
 # Create the directories to be able to be able to run the container in read-only.
 RUN mkdir -p webapps/ROOT conf/Catalina/localhost/ROOT work/Catalina/localhost/ROOT
