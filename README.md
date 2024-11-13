@@ -1,6 +1,32 @@
-# Example Docker Setup for the LCA Collaboration Server 2.0
+# Example Docker setup for the LCA Collaboration Server 2.3
 
-This repository contains a setup for running the [LCA Collaboration Server 2.0](https://www.openlca.org/collaboration-server/) in a Docker container. Before you run a setup as described below, you may have to update the download URLs for the LCA collaboration server and its installer in the [Docker file](./Dockerfile) first. Then, you can start the collaboration server by executing the following command:
+This repository contains a setup for running the [LCA Collaboration Server 2.3](https://www.openlca.org/collaboration-server/) in a Docker container.
+
+## Requirements
+
+To run this setup, you need Docker and Docker Compose:
+
+- [Docker](https://docs.docker.com/get-docker/)
+- [Docker Compose](https://docs.docker.com/compose/)
+
+## Environement variables
+
+The setup will use environment variables. These can be set in an `.env` file. The environement variables will be automatically loaded by the Docker Compose setup.
+
+```bash
+# Please fill in the following environment variables in this file
+MYSQL_URL=collaboration-server-db
+MYSQL_PORT=3306
+MYSQL_DATABASE=<please_fill_in>
+MYSQL_USER=<please_fill_in>
+MYSQL_PASSWORD=<please_fill_in>
+MYSQL_ROOT_PASSWORD=<please_fill_in>
+OPENSEARCH_INITIAL_ADMIN_PASSWORD=<please_fill_in>
+```
+
+## Running the LCA Collaboration Server with Docker compose
+
+You can start the collaboration server by executing the following command:
 
 ```bash
 cd lca-collaboration-server-docker
@@ -12,58 +38,52 @@ If not done yet, this will build the image for the collaboration server and also
 The setup will use two volumes (`db-data` and `server-data`) for storing data. These volumes are created if they do not exist yet:
 
 ```bash
-docker volume ls
-# DRIVER VOLUME NAME
-# local  lca-collaboration-server-docker_db-data
-# local  lca-collaboration-server-docker_server-data
+$ docker volume ls
+DRIVER    VOLUME NAME
+local     collaboration-server-docker_db-data
+local     collaboration-server-docker_server-data
 ```
 
-The collaboration server will run on port `8080`, thus http://localhost:8080 will bring you to the login page of the collaboration server (the initial admin user is `administrator` with the password: `Plea5eCh@ngeMe`, see also the [configuration guide](https://www.openlca.org/lca-collaboration-server-2-0-configuration-guide/).)
+The collaboration server will run on port `8080`, thus http://localhost:8080 will bring you to the login page of the collaboration server. The initial admin crendentials should be changed, see also the [configuration guide](https://www.openlca.org/lca-collaboration-server-2-0-configuration-guide/).
+
+
+| Username        | Password            |
+| --------------- | ------------------- |
+| `administrator` | `Plea5eCh@ngeMe`    |
+
 
 For using the search, you first need to enable it in the administration settings under `Enabled features: Search`. For the URL of the OpenSearch service, you need to set it to `http://search:9200`:
 
-```
-schema: http
-url:    search   # not localhost!
-port:   9200
-```
+
+| Schema | Url                       | Port  |
+| ------ | ------------------------- | ----- |
+| `http` | `search` # not localhost! | `9200`|
 
 
 ## Running in read-only mode with external MySQL Server
 
-To run the collaboration server in read-only mode, build the `lca-collaboration-server` image with the following command first:
+To run the collaboration server in read-only mode, build the `collaboration-server` image with the following command first:
 
 ```bash
-docker build -t lca-collaboration-server .
+docker build -t collaboration-server .
 ```
 
-The MySQL Server parameters can be adapted in the `application.properties` file:
-
-```bash
-spring.datasource.url=jdbc:mysql://<HOST>:<PORT>/<MYSQL_DATABASE>
-spring.datasource.username=<MYSQL_USER>
-spring.datasource.password=<MYSQL_PASSWORD>
-[...]
-```
+The MySQL Server parameters can be adapted in the `.env` file:
 
 The container can be run with the following command (the MySQL server must be up and running) then:
 
 ```bash
-docker compose -f compose-read-only.yaml up
+docker compose -f compose.read-only.yaml up
 ```
 
-If you want to run the containers in background instead, just add the `-d` flag to the command:
-
-```bash
-docker compose -f compose-read-only.yaml up -d
-```
+If you want to run the containers in background instead, just add the `-d` flag to the command.
 
 The setup will use a single volume (`server-data`) for storing data. This volume is created if it does not exist yet:
 
 ```bash
-docker volume ls
-# DRIVER VOLUME NAME
-# local  lca-collaboration-server-docker_server-data
+$ docker volume ls
+DRIVER    VOLUME NAME
+local     lca-collaboration-server-docker_server-data
 ```
 
 
@@ -72,7 +92,7 @@ docker volume ls
 For testing purposes, a MySQL container with different host name and port can be run with the following command:
 
 ```bash
-docker compose -f mysql/compose.yaml up
+docker compose -f compose.mysql.yaml up
 ```
 
 The database schema is initialized at start.

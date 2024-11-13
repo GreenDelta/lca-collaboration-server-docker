@@ -1,27 +1,43 @@
-FROM tomcat:10-jdk17
+# Download and extract the server WAR file
+FROM alpine:3.20 AS builder
 
 WORKDIR /
 
-# Install packages
-RUN apt-get update
-RUN apt-get install zip unzip
+# Install unzip
+RUN apk add --no-cache --upgrade bash && \
+    apk add unzip curl file
 
-# File structure and installation files
-RUN mkdir -p /opt/collab /opt/install
-WORKDIR /opt/install
-RUN curl https://share.greendelta.com/index.php/s/c1ulWTQ2NoKuZVB/download --output installer.jar
-COPY lca-collaboration-server-installer.config installer.config
+RUN mkdir ROOT
+RUN curl -L https://www.openlca.org/download/lca-collaboration-server/latest  --output ROOT.war
+RUN unzip ROOT.war -d ROOT
 
-# Fetch the server WAR file.
+# Create the runner image
+FROM tomcat:10-jdk21 AS runner
+
+LABEL COMPANY="GreenDelta GmbH"
+LABEL MAINTAINER="François Le Rall <lerall@greendelta.com>"
+
+RUN addgroup collab && adduser --ingroup collab --disabled-login --shell /bin/sh collab
+
+# Set up the /opt/collab directories with limited permissions
+RUN mkdir -p /opt/collab/git /opt/collab/lib && \
+    chown -R collab:collab /opt/collab && \
+    chmod -R 750 /opt/collab
+
 WORKDIR $CATALINA_HOME
-RUN rm -fR webapps/*
-RUN curl https://share.greendelta.com/index.php/s/SCt0vYJU2rsDRgq/download  --output webapps/ROOT.war
 
-# Create the directories to be able to be able to run the container in read-only.
-RUN mkdir -p webapps/ROOT conf/Catalina/localhost/ROOT work/Catalina/localhost/ROOT
-RUN unzip $CATALINA_HOME/webapps/ROOT.war -d webapps/ROOT
-RUN rm $CATALINA_HOME/webapps/ROOT.war
+RUN rm -rf webapps/* && \
+    mkdir -p conf/Catalina/localhost/ROOT work/Catalina/localhost/ROOT && \
+    chown -R collab:collab webapps conf work && \
+    chmod -R 750 conf work && \
+    umask 027
 
-WORKDIR $CATALINA_HOME
+# Copy the server files
+COPY --from=builder ROOT webapps/ROOT
+COPY ./application.properties webapps/ROOT/WEB-INF/classes/application.properties
+RUN chown -R collab:collab webapps/ROOT && \
+    chmod -R 750 webapps/ROOT
 
-CMD catalina.sh run
+USER collab
+
+CMD ["catalina.sh", "run"]
