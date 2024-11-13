@@ -1,15 +1,17 @@
-version: '3.8'
-
 services:
   server:
-    image: lca-collaboration-server
+    image: collaboration-server
     container_name: collaboration-server
-    command: catalina.sh run;
     ports:
       - 8080:8080
+    environment:
+      - MYSQL_URL
+      - MYSQL_PORT
+      - MYSQL_DATABASE
+      - MYSQL_USER
+      - MYSQL_PASSWORD
     volumes:
       - server-data:/opt/collab
-      - ./application.properties:/usr/local/tomcat/webapps/ROOT/WEB-INF/classes/application.properties
       - type: tmpfs
         target: /usr/local/tomcat/logs
       - type: tmpfs

@@ -1,0 +1,19 @@
+services:
+  db-standalone:
+    image: mysql:8.1
+    container_name: collaboration-server-db
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD
+      - MYSQL_DATABASE
+      - MYSQL_USER
+      - MYSQL_PASSWORD
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+    volumes:
+      - db-data:/var/lib/mysql
+volumes:
+  db-data:

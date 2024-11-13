@@ -1,22 +1,22 @@
-version: '3.8'
-
 services:
 
   server:
-    image: lca-collaboration-server
+    image: collaboration-server
     container_name: collaboration-server
     build: .
-    command: bash -c "java -jar /opt/install/installer.jar -p /opt/install/installer.config ; catalina.sh run ;"
     depends_on:
       db:
         condition: service_healthy
     ports:
       - 8080:8080
+    environment:
+      - MYSQL_URL
+      - MYSQL_PORT
+      - MYSQL_DATABASE
+      - MYSQL_USER
+      - MYSQL_PASSWORD
     volumes:
       - server-data:/opt/collab
-      - ./application.properties:/usr/local/tomcat/webapps/ROOT/WEB-INF/classes/application.properties
-    networks:
-      - collaboration
 
   db:
     image: mysql:8.1
@@ -24,33 +24,28 @@ services:
     ports:
       - 3306:3306
     environment:
-      - MYSQL_ROOT_PASSWORD=root-password
-      - MYSQL_DATABASE=collaboration-server
-      - MYSQL_USER=collaboration-server
-      - MYSQL_PASSWORD=collaboration-server
+      - MYSQL_ROOT_PASSWORD
+      - MYSQL_DATABASE
+      - MYSQL_USER
+      - MYSQL_PASSWORD
     healthcheck:
       test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
       timeout: 20s
       retries: 10
     volumes:
       - db-data:/var/lib/mysql
-    networks:
-      - collaboration
 
   search:
-    image: opensearchproject/opensearch:latest
+    image: opensearchproject/opensearch:2.17.1
     container_name: collaboration-server-search
     environment:
       - discovery.type=single-node
       - plugins.security.disabled=true
+      - OPENSEARCH_INITIAL_ADMIN_PASSWORD
     ports:
       - 9200:9200
       - 9600:9600
-    networks:
-      - collaboration
 
 volumes:
   db-data:
   server-data:
-networks:
-  collaboration:
