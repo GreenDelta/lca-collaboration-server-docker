@@ -28,6 +28,7 @@ Create the following environment variables:
 TF_VAR_AZURE_SUBSCRIPTION_ID=<please_fill_in>
 TF_VAR_MYSQL_ROOT_USER=<please_fill_in>
 TF_VAR_MYSQL_ROOT_PASSWORD=<please_fill_in>
+# Optional: leave empty to prevent Elasticsearch VM from being created
 TF_VAR_ELASTICSEARCH_ADMIN_USER=<please_fill_in>
 ```
 
@@ -40,36 +41,37 @@ export $(grep -v '^#' .env | xargs)
 
 ## Create the Azure infrastructure
 
-This will create all the resources on Azure and provision the ElasticSearch VM with an Ansible playbook.
+This will create all the resources on Azure and provision the Elasticsearch VM with an Ansible playbook.
 
 It can take up to 15 minutes.
 
 ```bash
-cd az
 terraform init
 terraform apply
 ```
 
 ## Configure the collaboration server
 
-`terraform apply` will output the public IP address of the Application Gateway (`app_gateway_public_ip`) and the private IP of the ElasticSearch VM (`elasticsearch_vm_private_ip`) as well as the public one (`elasticsearch_vm_public_ip`).
-You can use those values to configure your LCA Collaboration Server.
+`terraform apply` will output the public IP address of the Application Gateway (`app_gateway_public_ip`) and the optional private/public IP of the Elasticsearch VM (`elasticsearch_vm_private_ip`/`elasticsearch_vm_public_ip`).
+You can use those values to configure your LCA Collaboration Server. To read them, run:
+
+```bash
+terraform output <output_name>
+```
 
 The collaboration server will run on port `8080`, thus http://<app_gateway_public_ip>:8080 will bring you to the login page of the collaboration server. The initial admin crendentials should be changed, see also the [configuration guide](https://www.openlca.org/lca-collaboration-server-2-configuration-guide/).
 
+| Username        | Password         |
+| --------------- | ---------------- |
+| `administrator` | `Plea5eCh@ngeMe` |
 
-| Username        | Password            |
-| --------------- | ------------------- |
-| `administrator` | `Plea5eCh@ngeMe`    |
+The _repositories root directory_ is `/opt/collab/git` and the _libraries directory_ is `/opt/collab/lib`.
 
-The *repositories root directory* is `/opt/collab/git` and the *libraries directory* is `/opt/collab/lib`.
+For using the _Search_ feature, you first need to enable it in the administration settings under `Enabled features: Search`. For the URL of the OpenSearch service, you need to set it to `http://<elasticsearch_vm_private_ip>:9200`:
 
-For using the *Search* feature, you first need to enable it in the administration settings under `Enabled features: Search`. For the URL of the OpenSearch service, you need to set it to `http://<elasticsearch_vm_private_ip>:9200`:
-
-
-| Schema | Url                       | Port  |
-| ------ | ------------------------- | ----- |
-| `http` | `elasticsearch_vm_private_ip` # not localhost! | `9200`|
+| Schema | Url                                            | Port   |
+| ------ | ---------------------------------------------- | ------ |
+| `http` | `elasticsearch_vm_private_ip` # not localhost! | `9200` |
 
 ## Debugging
 
@@ -79,7 +81,7 @@ For using the *Search* feature, you first need to enable it in the administratio
 curl -I $(terraform output -raw app_gateway_public_ip):8080
 ```
 
-### Connect to the ElasticSearch VM
+### Connect to the Elasticsearch VM
 
 ```bash
 ssh $TF_VAR_ELASTICSEARCH_ADMIN_USER@$(terraform output -raw elasticsearch_vm_public_ip)
@@ -97,6 +99,5 @@ terraform apply
 To destroy all the resources on Azure (thus deleting all the data), run:
 
 ```bash
-cd az
 terraform destroy
 ```

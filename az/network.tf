@@ -5,6 +5,41 @@ resource "azurerm_virtual_network" "lcacollab" {
   address_space       = [var.address_space]
 }
 
+# App subnet
+
+resource "azurerm_subnet" "app" {
+  name                 = "snet-app"
+  resource_group_name  = azurerm_resource_group.lcacollab.name
+  virtual_network_name = azurerm_virtual_network.lcacollab.name
+  address_prefixes     = [var.app_address_prefix]
+
+  delegation {
+    name = "aci-app"
+
+    service_delegation {
+      name = "Microsoft.ContainerInstance/containerGroups"
+      actions = [
+        "Microsoft.Network/virtualNetworks/subnets/action",
+      ]
+    }
+  }
+}
+
+resource "azurerm_network_profile" "app" {
+  name                = "np-app"
+  location            = azurerm_resource_group.lcacollab.location
+  resource_group_name = azurerm_resource_group.lcacollab.name
+
+  container_network_interface {
+    name = "cni-app"
+
+    ip_configuration {
+      name      = "ipconfig-app"
+      subnet_id = azurerm_subnet.app.id
+    }
+  }
+}
+
 # App Gateway
 resource "azurerm_subnet" "public" {
   name                 = "snet-public"
@@ -83,33 +118,5 @@ resource "azurerm_application_gateway" "lcacollab" {
     http_listener_name         = local.listener_name
     backend_address_pool_name  = local.backend_address_pool_name
     backend_http_settings_name = local.http_setting_name
-  }
-}
-
-# Bastion
-resource "azurerm_subnet" "bastion" {
-  name                 = "AzureBastionSubnet"
-  resource_group_name  = azurerm_resource_group.lcacollab.name
-  virtual_network_name = azurerm_virtual_network.lcacollab.name
-  address_prefixes     = [var.bastion_address_prefix]
-}
-
-resource "azurerm_public_ip" "bastion" {
-  name                = "pip-bastion"
-  resource_group_name = azurerm_resource_group.lcacollab.name
-  location            = azurerm_resource_group.lcacollab.location
-  allocation_method   = "Static"
-  sku                 = "Standard"
-}
-
-resource "azurerm_bastion_host" "bastion" {
-  name                = "bastion-host"
-  resource_group_name = azurerm_resource_group.lcacollab.name
-  location            = azurerm_resource_group.lcacollab.location
-
-  ip_configuration {
-    name                 = "bastion-ip-config"
-    subnet_id            = azurerm_subnet.bastion.id
-    public_ip_address_id = azurerm_public_ip.bastion.id
   }
 }

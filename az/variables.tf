@@ -49,22 +49,17 @@ variable "public_address_prefix" {
   default = "10.0.1.0/24"
 }
 
-variable "bastion_address_prefix" {
+variable "app_address_prefix" {
   type    = string
   default = "10.0.2.0/24"
 }
 
-variable "app_address_prefix" {
+variable "mysql_address_prefix" {
   type    = string
   default = "10.0.3.0/24"
 }
 
-variable "mysql_address_prefix" {
-  type    = string
-  default = "10.0.4.0/24"
-}
-
 variable "elasticsearch_address_prefix" {
   type    = string
-  default = "10.0.5.0/24"
+  default = "10.0.4.0/24"
 }
