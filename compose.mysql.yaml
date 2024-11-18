@@ -1,7 +1,7 @@
 services:
   db-standalone:
     image: mysql:8.1
-    container_name: collaboration-server-db
+    container_name: lcacollab-db
     ports:
       - 3306:3306
     environment:
@@ -14,6 +14,7 @@ services:
       timeout: 20s
       retries: 10
     volumes:
-      - db-data:/var/lib/mysql
+      - db:/var/lib/mysql
 volumes:
-  db-data:
+  db:
+    name: lcacollab-db

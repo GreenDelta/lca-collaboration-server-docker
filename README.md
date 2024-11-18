@@ -15,7 +15,7 @@ The setup will use environment variables. These can be set in an `.env` file. Th
 
 ```bash
 # Please fill in the following environment variables in this file
-MYSQL_URL=collaboration-server-db
+MYSQL_URL=lcacollab-db  # the name of the MySQL container
 MYSQL_PORT=3306
 MYSQL_DATABASE=<please_fill_in>
 MYSQL_USER=<please_fill_in>
@@ -35,13 +35,13 @@ docker compose up
 
 If not done yet, this will build the image for the collaboration server and also fetch images for MySQL and OpenSearch. Then it starts containers for these images in interactive mode.
 
-The setup will use two volumes (`db-data` and `server-data`) for storing data. These volumes are created if they do not exist yet:
+The setup will use two volumes (`db` and `server`) for storing data. These volumes are created if they do not exist yet:
 
 ```bash
 $ docker volume ls
 DRIVER    VOLUME NAME
-local     collaboration-server-docker_db-data
-local     collaboration-server-docker_server-data
+local     lcacollab-db
+local     lcacollab-server
 ```
 
 The collaboration server will run on port `8080`, thus http://localhost:8080 will bring you to the login page of the collaboration server. The initial admin crendentials should be changed, see also the [configuration guide](https://www.openlca.org/lca-collaboration-server-2-0-configuration-guide/).
@@ -57,15 +57,15 @@ For using the search, you first need to enable it in the administration settings
 
 | Schema | Url                       | Port  |
 | ------ | ------------------------- | ----- |
-| `http` | `search` # not localhost! | `9200`|
+| `http` | `lcacollab-search` # not localhost! | `9200`|
 
 
 ## Running in read-only mode with external MySQL Server
 
-To run the collaboration server in read-only mode, build the `collaboration-server` image with the following command first:
+To run the collaboration server in read-only mode, build the `lcacollab` image with the following command first:
 
 ```bash
-docker build -t collaboration-server .
+docker build -t lcacollab .
 ```
 
 The MySQL Server parameters can be adapted in the `.env` file:
@@ -78,14 +78,13 @@ docker compose -f compose.read-only.yaml up
 
 If you want to run the containers in background instead, just add the `-d` flag to the command.
 
-The setup will use a single volume (`server-data`) for storing data. This volume is created if it does not exist yet:
+The setup will use a single volume (`server`) for storing data. This volume is created if it does not exist yet:
 
 ```bash
 $ docker volume ls
 DRIVER    VOLUME NAME
-local     lca-collaboration-server-docker_server-data
+local     lcacollab-server
 ```
-
 
 ## Run a stand alone MySQL container
 
