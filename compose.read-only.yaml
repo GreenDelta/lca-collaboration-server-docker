@@ -15,7 +15,7 @@ services:
       - type: tmpfs
         target: /usr/local/tomcat/logs
       - type: tmpfs
-        target: /root/.config
+        target: /home/collab/.config
     read_only: true
 volumes:
   server:
