@@ -11,8 +11,8 @@ resource "azurerm_container_group" "lcacollab" {
   }
 
   container {
-    name   = "collaboration-server"
-    image  = "registry.greendelta.com/hub/collaboration-server:2.3"
+    name   = "lcacollab"
+    image  = "registry.greendelta.com/hub/collaboration-server:${var.lcacollab_version}"
     cpu    = "2"
     memory = "2"
 

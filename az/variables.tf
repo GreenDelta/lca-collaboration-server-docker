@@ -21,6 +21,12 @@ variable "ELASTICSEARCH_ADMIN_USER" {
   sensitive   = true
 }
 
+variable "lcacollab_version" {
+  type        = string
+  default     = "2.3"
+  description = "LCA Collaboration Server version"
+}
+
 variable "mysql_server_name" {
   type        = string
   default     = "mysqlfs-lcacollab"
@@ -29,7 +35,7 @@ variable "mysql_server_name" {
 
 variable "mysql_database" {
   type        = string
-  default     = "collaboration-server"
+  default     = "lcacollab"
   description = "MySQL database name for the LCA Collaboration Server"
 }
 

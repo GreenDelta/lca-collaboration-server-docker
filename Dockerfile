@@ -40,4 +40,4 @@ RUN chown -R collab:collab webapps/ROOT && \
 
 USER collab
 
-CMD ["catalina.sh", "run"]
+ENTRYPOINT ["catalina.sh", "run"]

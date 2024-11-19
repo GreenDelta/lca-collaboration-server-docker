@@ -42,6 +42,6 @@ variable "server_name" {
 
 variable "database" {
   type        = string
-  default     = "collaboration-server"
+  default     = "lcacollab"
   description = "MySQL database name for the LCA Collaboration Server"
 }
