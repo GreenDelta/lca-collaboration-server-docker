@@ -1,6 +1,6 @@
-output "app_gateway_public_ip" {
-  description = "Public IP address of the Application Gateway"
-  value       = azurerm_public_ip.app_gateway.ip_address
+output "fqdn" {
+  description = "FQDN of the LCA Collaboration Server"
+  value       = azurerm_public_ip.app_gateway.fqdn
 }
 
 output "elasticsearch_vm_private_ip" {

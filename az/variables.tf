@@ -21,6 +21,17 @@ variable "ELASTICSEARCH_ADMIN_USER" {
   sensitive   = true
 }
 
+variable "SSL_CERT_FILE" {
+  type        = string
+  description = "Path to the SSL certificate file"
+}
+
+variable "SSL_CERT_PASSWORD" {
+  type        = string
+  description = "Password for the SSL certificate file"
+  sensitive   = true
+}
+
 variable "lcacollab_version" {
   type        = string
   default     = "2.3"

@@ -34,7 +34,7 @@ resource "null_resource" "provision" {
       private_key = file("~/.ssh/id_rsa")
       agent       = false
     }
-    inline = ["echo 'Elasticsearch up and running'"]
+    inline = ["echo 'Connected to Elasticsearch VM!'"]
   }
 
   provisioner "local-exec" {

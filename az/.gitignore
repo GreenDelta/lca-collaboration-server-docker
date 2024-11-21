@@ -1,4 +1,6 @@
 .env
+*.pfx
+*.pem
 
 # Local .terraform directories
 **/.terraform/*

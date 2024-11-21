@@ -28,6 +28,8 @@ Create the following environment variables:
 TF_VAR_AZURE_SUBSCRIPTION_ID=<please_fill_in>
 TF_VAR_MYSQL_ROOT_USER=<please_fill_in>
 TF_VAR_MYSQL_ROOT_PASSWORD=<please_fill_in>
+TF_VAR_SSL_CERT_FILE=<please_fill_in>
+TF_VAR_SSL_CERT_PASSWORD=<please_fill_in>
 # Optional: leave empty to prevent Elasticsearch VM from being created
 TF_VAR_ELASTICSEARCH_ADMIN_USER=<please_fill_in>
 ```
@@ -38,6 +40,8 @@ These can be store in an `az/.env` file and loaded with:
 cd az
 export $(grep -v '^#' .env | xargs)
 ```
+
+The `TF_VAR_SSL_CERT_FILE` should be the path to the file containing the SSL certificate (`.pfx`).
 
 ## Create the Azure infrastructure
 
@@ -52,7 +56,7 @@ terraform apply
 
 ## Configure the collaboration server
 
-`terraform apply` will output the public IP address of the Application Gateway (`app_gateway_public_ip`) and the optional private/public IP of the Elasticsearch VM (`elasticsearch_vm_private_ip`/`elasticsearch_vm_public_ip`).
+`terraform apply` will output the FQDN of the public IP of the Application Gateway (`fqdn`) and the optional private/public IP of the Elasticsearch VM (`elasticsearch_vm_private_ip`/`elasticsearch_vm_public_ip`).
 You can use those values to configure your LCA Collaboration Server. To read them, run:
 
 ```bash
@@ -74,12 +78,6 @@ For using the _Search_ feature, you first need to enable it in the administratio
 | `http` | `elasticsearch_vm_private_ip` # not localhost! | `9200` |
 
 ## Debugging
-
-### Check if the app is running
-
-```bash
-curl -I $(terraform output -raw app_gateway_public_ip):8080
-```
 
 ### Connect to the Elasticsearch VM
 
