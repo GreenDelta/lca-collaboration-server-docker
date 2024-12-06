@@ -1,5 +1,5 @@
 ---
-- name: Single node ElasticSeach cluster
+- name: Single node ElasticSearch cluster
   hosts: all
   become: true
   vars:

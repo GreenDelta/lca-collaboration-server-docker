@@ -58,25 +58,30 @@ variable "location" {
 
 variable "address_space" {
   type    = string
-  default = "10.0.0.0/16"
+  default = "10.0.0.0/24"
 }
 
 variable "public_address_prefix" {
   type    = string
-  default = "10.0.1.0/24"
+  default = "10.0.0.16/28"
+}
+
+variable "storage_address_prefix" {
+  type    = string
+  default = "10.0.0.32/28"
 }
 
 variable "app_address_prefix" {
   type    = string
-  default = "10.0.2.0/24"
+  default = "10.0.0.48/28"
 }
 
 variable "mysql_address_prefix" {
   type    = string
-  default = "10.0.3.0/24"
+  default = "10.0.0.64/28"
 }
 
 variable "elasticsearch_address_prefix" {
   type    = string
-  default = "10.0.4.0/24"
+  default = "10.0.0.80/28"
 }

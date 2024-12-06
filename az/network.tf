@@ -6,12 +6,13 @@ resource "azurerm_virtual_network" "lcacollab" {
 }
 
 # App subnet
-
 resource "azurerm_subnet" "app" {
-  name                 = "snet-app"
-  resource_group_name  = azurerm_resource_group.lcacollab.name
-  virtual_network_name = azurerm_virtual_network.lcacollab.name
-  address_prefixes     = [var.app_address_prefix]
+  name                              = "snet-app"
+  resource_group_name               = azurerm_resource_group.lcacollab.name
+  virtual_network_name              = azurerm_virtual_network.lcacollab.name
+  address_prefixes                  = [var.app_address_prefix]
+  private_endpoint_network_policies = "Enabled"
+  service_endpoints                 = ["Microsoft.Storage"]
 
   delegation {
     name = "aci-app"
@@ -25,18 +26,43 @@ resource "azurerm_subnet" "app" {
   }
 }
 
-resource "azurerm_network_profile" "app" {
-  name                = "np-app"
-  location            = azurerm_resource_group.lcacollab.location
+# File share subnet
+resource "azurerm_subnet" "storage" {
+  name                 = "snet-file"
+  resource_group_name  = azurerm_resource_group.lcacollab.name
+  virtual_network_name = azurerm_virtual_network.lcacollab.name
+  address_prefixes     = [var.storage_address_prefix]
+  service_endpoints    = ["Microsoft.Storage"]
+}
+
+resource "azurerm_private_dns_zone" "storage" {
+  name                = "privatelink.storage.core.windows.net"
   resource_group_name = azurerm_resource_group.lcacollab.name
+}
 
-  container_network_interface {
-    name = "cni-app"
+resource "azurerm_private_dns_zone_virtual_network_link" "storage" {
+  name                  = "vnetzone-fileshare-${azurerm_resource_group.lcacollab.name}.com"
+  resource_group_name   = azurerm_resource_group.lcacollab.name
+  private_dns_zone_name = azurerm_private_dns_zone.storage.name
+  virtual_network_id    = azurerm_virtual_network.lcacollab.id
+}
 
-    ip_configuration {
-      name      = "ipconfig-app"
-      subnet_id = azurerm_subnet.app.id
-    }
+resource "azurerm_private_endpoint" "storage" {
+  name                = "pe-fileshare-lcacollab"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.lcacollab.name
+  subnet_id           = azurerm_subnet.storage.id
+
+  private_service_connection {
+    name                           = "psc-fileshare-lcacollab"
+    private_connection_resource_id = azurerm_storage_account.lcacollab.id
+    is_manual_connection           = false
+    subresource_names              = ["file"]
+  }
+
+  private_dns_zone_group {
+    name                 = "pdnsz-fileshare-lcacollab"
+    private_dns_zone_ids = [azurerm_private_dns_zone.storage.id]
   }
 }
 

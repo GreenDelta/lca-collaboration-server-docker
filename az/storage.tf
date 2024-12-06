@@ -1,15 +1,21 @@
-resource "azurerm_storage_account" "lcacollab" {
-  name                     = "lcacollab"
-  resource_group_name      = azurerm_resource_group.lcacollab.name
-  location                 = var.location
-  account_tier             = "Standard"
-  account_replication_type = "LRS"
+data "http" "my_ip" {
+  url = "https://ipinfo.io/ip"
 }
 
-resource "azurerm_role_assignment" "lcacollab_file_share_access" {
-  scope                = azurerm_storage_account.lcacollab.id
-  role_definition_name = "Storage File Data SMB Share Contributor"
-  principal_id         = azurerm_user_assigned_identity.lcacollab.principal_id
+resource "azurerm_storage_account" "lcacollab" {
+  name                       = "lcacollab"
+  resource_group_name        = azurerm_resource_group.lcacollab.name
+  location                   = var.location
+  account_tier               = "Standard"
+  account_kind               = "StorageV2"
+  account_replication_type   = "LRS"
+  https_traffic_only_enabled = true
+
+  network_rules {
+    default_action             = "Deny"
+    virtual_network_subnet_ids = [azurerm_subnet.storage.id, azurerm_subnet.app.id]
+    ip_rules                   = [trimspace(data.http.my_ip.response_body)]
+  }
 }
 
 resource "azurerm_storage_share" "lcacollab" {

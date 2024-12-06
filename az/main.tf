@@ -3,12 +3,6 @@ resource "azurerm_resource_group" "lcacollab" {
   location = var.location
 }
 
-resource "azurerm_user_assigned_identity" "lcacollab" {
-  name                = "id-lcacollab"
-  resource_group_name = azurerm_resource_group.lcacollab.name
-  location            = var.location
-}
-
 module "elasticsearch" {
   source               = "./elasticsearch"
   count                = var.ELASTICSEARCH_ADMIN_USER != "" ? 1 : 0

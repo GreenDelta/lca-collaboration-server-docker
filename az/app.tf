@@ -5,11 +5,6 @@ resource "azurerm_container_group" "lcacollab" {
   os_type             = "Linux"
   subnet_ids          = [azurerm_subnet.app.id]
 
-  identity {
-    type         = "UserAssigned"
-    identity_ids = [azurerm_user_assigned_identity.lcacollab.id]
-  }
-
   container {
     name   = "lcacollab"
     image  = "registry.greendelta.com/hub/collaboration-server:${var.lcacollab_version}"
