@@ -1,9 +1,9 @@
 resource "azurerm_container_group" "lcacollab" {
-  name                = "cg-lcacollab"
-  location            = azurerm_resource_group.lcacollab.location
-  resource_group_name = azurerm_resource_group.lcacollab.name
+  name                = "cg-LCACollab-prd-weu"
+  location            = var.location
+  resource_group_name = var.resource_group_name
   os_type             = "Linux"
-  subnet_ids          = [azurerm_subnet.app.id]
+  subnet_ids          = [module.network.app_subnet_id]
 
   container {
     name   = "lcacollab"
@@ -15,8 +15,8 @@ resource "azurerm_container_group" "lcacollab" {
       MYSQL_URL      = module.mysql.url
       MYSQL_PORT     = "3306"
       MYSQL_DATABASE = var.mysql_database
-      MYSQL_USER     = var.MYSQL_ROOT_USER
-      MYSQL_PASSWORD = var.MYSQL_ROOT_PASSWORD
+      MYSQL_USER     = var.mysql_root_user
+      MYSQL_PASSWORD = var.mysql_root_password
     }
 
     ports {

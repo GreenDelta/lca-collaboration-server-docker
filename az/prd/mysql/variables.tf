@@ -8,18 +8,8 @@ variable "location" {
   type        = string
 }
 
-variable "virtual_network_name" {
-  description = "The name of the virtual network."
-  type        = string
-}
-
-variable "virtual_network_id" {
-  description = "The ID of the virtual network."
-  type        = string
-}
-
-variable "address_prefix" {
-  description = "The address space used by the subnet."
+variable "subnet_id" {
+  description = "The ID of the subnet"
   type        = string
 }
 

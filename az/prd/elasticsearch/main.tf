@@ -1,5 +1,5 @@
 resource "azurerm_linux_virtual_machine" "this" {
-  name                  = "vm-elasticsearch"
+  name                  = "vm-LCACollab-elasticsearch-prd-weu"
   resource_group_name   = var.resource_group_name
   location              = var.location
   size                  = "Standard_DS2_v2"

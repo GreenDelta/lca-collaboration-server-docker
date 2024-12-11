@@ -1,12 +1,12 @@
 resource "azurerm_mysql_flexible_server" "this" {
   location                     = var.location
-  name                         = "mysqlfs-lcacollab"
-  zone                         = "1"
+  name                         = "mysqlfs-lcacollab-prd-weu"
+  zone                         = 2
   resource_group_name          = var.resource_group_name
   administrator_login          = var.root_user
   administrator_password       = var.root_password
   backup_retention_days        = 7
-  delegated_subnet_id          = azurerm_subnet.this.id
+  delegated_subnet_id          = var.subnet_id
   geo_redundant_backup_enabled = false
   sku_name                     = "B_Standard_B1ms"
   version                      = "8.0.21"

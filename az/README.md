@@ -20,7 +20,7 @@ It will fail because it needs to do multi-factor authentication, but it should o
 az login --tenant TENANT_ID
 ```
 
-## Export the environment variables
+## Environment variables
 
 Create the following environment variables:
 
@@ -28,8 +28,6 @@ Create the following environment variables:
 TF_VAR_AZURE_SUBSCRIPTION_ID=<please_fill_in>
 TF_VAR_MYSQL_ROOT_USER=<please_fill_in>
 TF_VAR_MYSQL_ROOT_PASSWORD=<please_fill_in>
-TF_VAR_SSL_CERT_FILE=<please_fill_in>
-TF_VAR_SSL_CERT_PASSWORD=<please_fill_in>
 # Optional: leave empty to prevent Elasticsearch VM from being created
 TF_VAR_ELASTICSEARCH_ADMIN_USER=<please_fill_in>
 ```
@@ -41,8 +39,6 @@ cd az
 export $(grep -v '^#' .env | xargs)
 ```
 
-The `TF_VAR_SSL_CERT_FILE` should be the path to the file containing the SSL certificate (`.pfx`).
-
 ## Create the Azure infrastructure
 
 This will create all the resources on Azure and provision the Elasticsearch VM with an Ansible playbook.
@@ -50,8 +46,7 @@ This will create all the resources on Azure and provision the Elasticsearch VM w
 It can take up to 15 minutes.
 
 ```bash
-terraform init
-terraform apply
+./deploy.sh
 ```
 
 ## Configure the collaboration server
@@ -60,7 +55,7 @@ terraform apply
 You can use those values to configure your LCA Collaboration Server. To read them, run:
 
 ```bash
-terraform output <output_name>
+terraform output lcacollab
 ```
 
 The collaboration server will run on port `8080`, thus http://<app_gateway_public_ip>:8080 will bring you to the login page of the collaboration server. The initial admin crendentials should be changed, see also the [configuration guide](https://www.openlca.org/lca-collaboration-server-2-configuration-guide/).
@@ -82,14 +77,14 @@ For using the _Search_ feature, you first need to enable it in the administratio
 ### Connect to the Elasticsearch VM
 
 ```bash
-ssh $TF_VAR_ELASTICSEARCH_ADMIN_USER@$(terraform output -raw elasticsearch_vm_public_ip)
+ssh $TF_VAR_ELASTICSEARCH_ADMIN_USER@$(terraform output -json lcacollab | jq -r '.elasticsearch_vm_public_ip')
 ```
 
 ### Show more verbose when running Terraform
 
 ```bash
 export TF_LOG=DEBUG
-terraform apply
+./deploy.sh
 ```
 
 ## Destroy the Azure infrastructure (/!\ this will delete all the data)
