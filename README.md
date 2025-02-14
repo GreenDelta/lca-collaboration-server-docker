@@ -1,6 +1,6 @@
-# Example Docker setup for the LCA Collaboration Server 2.3
+# Example Docker setup for the LCA Collaboration Server
 
-This repository contains a setup for running the [LCA Collaboration Server 2.3](https://www.openlca.org/collaboration-server/) in a Docker container.
+This repository contains a setup for running the [LCA Collaboration Server](https://www.openlca.org/collaboration-server/) in a Docker container.
 
 ## Requirements
 
@@ -33,7 +33,7 @@ cd lca-collaboration-server-docker
 docker compose up
 ```
 
-If not done yet, this will build the image for the collaboration server and also fetch images for MySQL and OpenSearch. Then it starts containers for these images in interactive mode.
+It will fetch images for the LCA Collaboration Server (from registry.greendelta.com), MySQL and OpenSearch. Then it starts containers for these images in interactive mode.
 
 The setup will use two volumes (`db` and `server`) for storing data. These volumes are created if they do not exist yet:
 
@@ -44,7 +44,7 @@ local     lcacollab-db
 local     lcacollab-server
 ```
 
-The collaboration server will run on port `8080`, thus http://localhost:8080 will bring you to the login page of the collaboration server. The initial admin crendentials should be changed, see also the [configuration guide](https://www.openlca.org/lca-collaboration-server-2-0-configuration-guide/).
+The collaboration server will run on port `8080`, thus http://localhost:8080 will bring you to the login page of the collaboration server. The initial admin crendentials should be changed, see also the [configuration guide](https://www.openlca.org/lca-collaboration-server-2-configuration-guide/).
 
 
 | Username        | Password            |
@@ -62,15 +62,7 @@ For using the search, you first need to enable it in the administration settings
 
 ## Running in read-only mode with external MySQL Server
 
-To run the collaboration server in read-only mode, build the `lcacollab` image with the following command first:
-
-```bash
-docker build -t lcacollab .
-```
-
-The MySQL Server parameters can be adapted in the `.env` file:
-
-The container can be run with the following command (the MySQL server must be up and running) then:
+The container can be run with the following command (the MySQL server must be up and running):
 
 ```bash
 docker compose -f compose.read-only.yaml up
