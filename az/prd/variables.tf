@@ -17,7 +17,7 @@ variable "elasticsearch_admin_user" {
 
 variable "lcacollab_version" {
   type        = string
-  default     = "2.3"
+  default     = "2.4.0"
   description = "LCA Collaboration Server version"
 }
 

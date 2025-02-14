@@ -1,6 +1,6 @@
 services:
   server:
-    image: lcacollab
+    image: registry.greendelta.com/hub/collaboration-server:latest
     container_name: lcacollab
     ports:
       - 8080:8080

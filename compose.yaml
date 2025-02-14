@@ -1,9 +1,7 @@
 services:
-
   server:
-    image: lcacollab
+    image: registry.greendelta.com/hub/collaboration-server:latest
     container_name: lcacollab
-    build: .
     depends_on:
       db:
         condition: service_healthy
@@ -29,7 +27,7 @@ services:
       - MYSQL_USER
       - MYSQL_PASSWORD
     healthcheck:
-      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       timeout: 20s
       retries: 10
     volumes:
