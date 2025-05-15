@@ -9,19 +9,18 @@ To run this setup, you need Docker and Docker Compose:
 - [Docker](https://docs.docker.com/get-docker/)
 - [Docker Compose](https://docs.docker.com/compose/)
 
-## Environement variables
+## Environment variables
 
-The setup will use environment variables. These can be set in an `.env` file. The environement variables will be automatically loaded by the Docker Compose setup.
+The setup will use environment variables. These can be set in a file named `.env`. The environment variables will be automatically loaded by the Docker Compose setup.
 
 ```bash
 # Please fill in the following environment variables in this file
-MYSQL_URL=lcacollab-db  # the name of the MySQL container
-MYSQL_PORT=3306
 MYSQL_DATABASE=<please_fill_in>
 MYSQL_USER=<please_fill_in>
 MYSQL_PASSWORD=<please_fill_in>
 MYSQL_ROOT_PASSWORD=<please_fill_in>
 OPENSEARCH_INITIAL_ADMIN_PASSWORD=<please_fill_in>
+SERVER_URL=<please_fill_in>  # optional
 ```
 
 ## Running the LCA Collaboration Server with Docker compose
@@ -31,6 +30,13 @@ You can start the collaboration server by executing the following command:
 ```bash
 cd lca-collaboration-server-docker
 docker compose up
+```
+
+> **_NOTE:_**  When modifying the `.env` file, you need to re-run the Docker
+Compose command with the `--force-recreate` flag:
+
+```bash
+docker compose up --force-recreate
 ```
 
 It will fetch images for the LCA Collaboration Server (from registry.greendelta.com), MySQL and OpenSearch. Then it starts containers for these images in interactive mode.
@@ -44,21 +50,22 @@ local     lcacollab-db
 local     lcacollab-server
 ```
 
-The collaboration server will run on port `8080`, thus http://localhost:8080 will bring you to the login page of the collaboration server. The initial admin crendentials should be changed, see also the [configuration guide](https://www.openlca.org/lca-collaboration-server-2-configuration-guide/).
+### Setting up the server
 
+The collaboration server will run on port `8080`, thus http://localhost:8080
+will bring you to the login page of the collaboration server. The initial
+admin credentials should be changed, see also the [configuration guide](https://www.openlca.org/lca-collaboration-server-2-configuration-guide/).
 
 | Username        | Password            |
 | --------------- | ------------------- |
 | `administrator` | `Plea5eCh@ngeMe`    |
 
 
-For using the search, you first need to enable it in the administration settings under `Enabled features: Search`. For the URL of the OpenSearch service, you need to set it to `http://search:9200`:
-
-
-| Schema | Url                       | Port  |
-| ------ | ------------------------- | ----- |
-| `http` | `lcacollab-search` # not localhost! | `9200`|
-
+For using OpenSearch, you will need to stop and restart the containers (without
+the `--force-recreate` flag!).
+Then, re-index the repositories in `/administration/overview`. You can click on
+`Run test search` in `/administration/settings` to verify that OpenSearch is
+working.
 
 ## Running in read-only mode with external MySQL Server
 

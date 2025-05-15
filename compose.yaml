@@ -8,11 +8,16 @@ services:
     ports:
       - 8080:8080
     environment:
-      - MYSQL_URL
-      - MYSQL_PORT
+      - SERVER_URL
+      - MYSQL_URL=lcacollab-db
+      - MYSQL_PORT=3306
       - MYSQL_DATABASE
       - MYSQL_USER
       - MYSQL_PASSWORD
+      - SEARCH_ENABLED=true
+      - SEARCH_SCHEMA=http
+      - SEARCH_HOST=lcacollab-search
+      - SEARCH_PORT=9200
     volumes:
       - server:/opt/collab
 
