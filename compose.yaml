@@ -2,18 +2,19 @@ services:
   server:
     image: registry.greendelta.com/hub/collaboration-server:latest
     container_name: lcacollab
+    restart: unless-stopped
     depends_on:
       db:
         condition: service_healthy
+      search:
+        condition: service_started
     ports:
       - 8080:8080
     environment:
       - SERVER_URL
-      - MYSQL_URL=lcacollab-db
-      - MYSQL_PORT=3306
-      - MYSQL_DATABASE
-      - MYSQL_USER
-      - MYSQL_PASSWORD
+      - DATABASE_URL=jdbc:mariadb://lcacollab-db:3306/${MARIADB_DATABASE}
+      - DATABASE_USER=${MARIADB_USER}
+      - DATABASE_PASSWORD=${MARIADB_PASSWORD}
       - SEARCH_ENABLED=true
       - SEARCH_SCHEMA=http
       - SEARCH_HOST=lcacollab-search
@@ -22,35 +23,43 @@ services:
       - server:/opt/collab
 
   db:
-    image: mysql:8.1
+    image: mariadb:12.3
     container_name: lcacollab-db
+    restart: unless-stopped
     ports:
-      - 3306:3306
+      - 127.0.0.1:3306:3306
     environment:
-      - MYSQL_ROOT_PASSWORD
-      - MYSQL_DATABASE
-      - MYSQL_USER
-      - MYSQL_PASSWORD
+      - MARIADB_ROOT_PASSWORD
+      - MARIADB_DATABASE
+      - MARIADB_USER
+      - MARIADB_PASSWORD
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      timeout: 20s
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
       retries: 10
+      start_period: 30s
     volumes:
       - db:/var/lib/mysql
 
   search:
-    image: opensearchproject/opensearch:2.17.1
+    image: opensearchproject/opensearch:3.8.0
     container_name: lcacollab-search
+    restart: unless-stopped
+    ports:
+      - 127.0.0.1:9200:9200
     environment:
       - discovery.type=single-node
-      - plugins.security.disabled=true
-      - OPENSEARCH_INITIAL_ADMIN_PASSWORD
-    ports:
-      - 9200:9200
-      - 9600:9600
+      - DISABLE_INSTALL_DEMO_CONFIG=true
+      - DISABLE_SECURITY_PLUGIN=true
+    volumes:
+      - search:/usr/share/opensearch/data
 
 volumes:
   db:
     name: lcacollab-db
   server:
     name: lcacollab-server
+  search:
+    name: lcacollab-search
+

@@ -15,12 +15,11 @@ The setup will use environment variables. These can be set in a file named `.env
 
 ```bash
 # Please fill in the following environment variables in this file
-MYSQL_DATABASE=<please_fill_in>
-MYSQL_USER=<please_fill_in>
-MYSQL_PASSWORD=<please_fill_in>
-MYSQL_ROOT_PASSWORD=<please_fill_in>
-OPENSEARCH_INITIAL_ADMIN_PASSWORD=<please_fill_in>
 SERVER_URL=<please_fill_in>  # optional
+MARIADB_ROOT_PASSWORD=<please_fill_in>
+MARIADB_DATABASE=<please_fill_in>
+MARIADB_USER=<please_fill_in>
+MARIADB_PASSWORD=<please_fill_in>
 ```
 
 ## Running the LCA Collaboration Server with Docker compose
@@ -75,6 +74,16 @@ The container can be run with the following command (the MySQL server must be up
 docker compose -f compose.read-only.yaml up
 ```
 
+> **_NOTE:_** You need to supply different `.env` file in this case
+
+```bash
+# Please fill in the following environment variables in this file
+DATABASE_URL=<please_fill_in_complete_jdbc_url>
+DATABASE_USER=<please_fill_in>
+DATABASE_PASSWORD=<please_fill_in>
+SERVER_URL=<please_fill_in>  # optional
+```
+
 If you want to run the containers in background instead, just add the `-d` flag to the command.
 
 The setup will use a single volume (`server`) for storing data. This volume is created if it does not exist yet:
@@ -87,10 +96,16 @@ local     lcacollab-server
 
 ## Run a stand alone MySQL container
 
-For testing purposes, a MySQL container with different host name and port can be run with the following command:
+For testing purposes, a MySQL/MariaDB container with different host name and port can be run with the following command:
 
 ```bash
 docker compose -f compose.mysql.yaml up
+```
+
+or
+
+```bash
+docker compose -f compose.mariadb.yaml up
 ```
 
 The database schema is initialized at start.

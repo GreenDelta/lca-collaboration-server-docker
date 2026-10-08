@@ -1,2 +1,0 @@
-plugins.security.disabled: true
-path.data: /data/opensearch
